@@ -1,20 +1,25 @@
 #include "FRobot.h"
 
-const byte FRobot::MOTOR_CTL_A 				= 7;
-const byte FRobot::MOTOR_CTL_B 				= 8;
-const byte FRobot::MOTOR_CTL_ENABLE 		= 3;
-const byte FRobot::MOTOR_CTL_C 				= 12;
-const byte FRobot::MOTOR_CTL_D 				= 13;
+// Pin Assignments
+const byte FRobot::MOTOR_CTL_A_PIN 			= 7;
+const byte FRobot::MOTOR_CTL_B_PIN 			= 8;
+const byte FRobot::MOTOR_CTL_ENABLE_PIN 	= 3;
+const byte FRobot::MOTOR_CTL_C_PIN 			= 12;
+const byte FRobot::MOTOR_CTL_D_PIN 			= 13;
 const byte FRobot::SERVO_STEERING_PIN 		= 9;
 const byte FRobot::SERVO_SONAR_PIN 			= 10;
-const byte FRobot::SONAR_TRIGGER			= 4;
-const byte FRobot::SONAR_ECHO 				= 5;
+const byte FRobot::SONAR_TRIGGER_PIN		= 4;
+const byte FRobot::SONAR_ECHO_PIN 			= 5;
+
+// Servo Centering Values
 const byte FRobot::STEERING_CENTER_ANGLE 	= 90;
 const byte FRobot::SONAR_CENTER_ANGLE 		= 90;
 
+// Magic Numbers for Servos
 const byte FRobot::MAX_STEERING_ANGLE 		= 25;
 const byte FRobot::MAX_SCAN_ANGLE 			= 50;
 const byte FRobot::SCAN_ANGLE_STEP			= 5;
+
 
 FRobot::FRobot() {
 	mLastScanValuesLength = (2 * (MAX_SCAN_ANGLE/SCAN_ANGLE_STEP)) + 1;
@@ -34,14 +39,14 @@ void FRobot::Initialize() {
 	mSteerServo.write(STEERING_CENTER_ANGLE);  
 	mSonarServo.attach(SERVO_SONAR_PIN);
 	mSonarServo.write(SONAR_CENTER_ANGLE);
-	pinMode(SONAR_TRIGGER, OUTPUT);
-	pinMode(SONAR_ECHO, INPUT);
-	pinMode(MOTOR_CTL_A, OUTPUT);
-	pinMode(MOTOR_CTL_B, OUTPUT);
-	pinMode(MOTOR_CTL_ENABLE, OUTPUT);
-	pinMode(MOTOR_CTL_C, OUTPUT);
-	pinMode(MOTOR_CTL_D, OUTPUT);
-	digitalWrite(MOTOR_CTL_ENABLE, LOW);
+	pinMode(SONAR_TRIGGER_PIN, OUTPUT);
+	pinMode(SONAR_ECHO_PIN, INPUT);
+	pinMode(MOTOR_CTL_A_PIN, OUTPUT);
+	pinMode(MOTOR_CTL_B_PIN, OUTPUT);
+	pinMode(MOTOR_CTL_ENABLE_PIN, OUTPUT);
+	pinMode(MOTOR_CTL_C_PIN, OUTPUT);
+	pinMode(MOTOR_CTL_D_PIN, OUTPUT);
+	digitalWrite(MOTOR_CTL_ENABLE_PIN, LOW);
 	
 	mCurrentForwardClearance = 0;
 	for (int arrayIndex = 0; arrayIndex < mLastScanValuesLength; arrayIndex++) {
@@ -94,52 +99,52 @@ void FRobot::NavigateTowardClearestPath() {
 
 void FRobot::GoForward(boolean fadeIn, byte maxSpeed)
 {
-	digitalWrite(MOTOR_CTL_ENABLE, LOW);
-	digitalWrite(MOTOR_CTL_A, LOW);
-	digitalWrite(MOTOR_CTL_B, HIGH);
-	digitalWrite(MOTOR_CTL_C, LOW);  
-	digitalWrite(MOTOR_CTL_D, HIGH);    
+	digitalWrite(MOTOR_CTL_ENABLE_PIN, LOW);
+	digitalWrite(MOTOR_CTL_A_PIN, LOW);
+	digitalWrite(MOTOR_CTL_B_PIN, HIGH);
+	digitalWrite(MOTOR_CTL_C_PIN, LOW);  
+	digitalWrite(MOTOR_CTL_D_PIN, HIGH);    
 	if (fadeIn) { 
 		for(int i = (maxSpeed/2); i <= maxSpeed; i += (maxSpeed/16)) {
-			analogWrite(MOTOR_CTL_ENABLE, i);  
+			analogWrite(MOTOR_CTL_ENABLE_PIN, i);  
 			delay(maxSpeed/8);
 		}
 	}
 	if (maxSpeed == 255)
-		digitalWrite(MOTOR_CTL_ENABLE, HIGH);
+		digitalWrite(MOTOR_CTL_ENABLE_PIN, HIGH);
 	else
-		analogWrite(MOTOR_CTL_ENABLE, maxSpeed);
+		analogWrite(MOTOR_CTL_ENABLE_PIN, maxSpeed);
 }
 
 void FRobot::Stop()
 {
-	digitalWrite(MOTOR_CTL_ENABLE, LOW);
-	digitalWrite(MOTOR_CTL_A, HIGH);
-	digitalWrite(MOTOR_CTL_B, HIGH);
-	digitalWrite(MOTOR_CTL_C, HIGH);  
-	digitalWrite(MOTOR_CTL_D, HIGH);    
-	digitalWrite(MOTOR_CTL_ENABLE, HIGH);  
+	digitalWrite(MOTOR_CTL_ENABLE_PIN, LOW);
+	digitalWrite(MOTOR_CTL_A_PIN, HIGH);
+	digitalWrite(MOTOR_CTL_B_PIN, HIGH);
+	digitalWrite(MOTOR_CTL_C_PIN, HIGH);  
+	digitalWrite(MOTOR_CTL_D_PIN, HIGH);    
+	digitalWrite(MOTOR_CTL_ENABLE_PIN, HIGH);  
 	delay(1000);
-	digitalWrite(MOTOR_CTL_ENABLE, LOW);  
+	digitalWrite(MOTOR_CTL_ENABLE_PIN, LOW);  
 }
 
 void FRobot::GoBackward(boolean fadeIn, byte maxSpeed)
 {
-	digitalWrite(MOTOR_CTL_ENABLE, LOW);
-	digitalWrite(MOTOR_CTL_A, HIGH);
-	digitalWrite(MOTOR_CTL_B, LOW);
-	digitalWrite(MOTOR_CTL_C, HIGH);  
-	digitalWrite(MOTOR_CTL_D, LOW); 
+	digitalWrite(MOTOR_CTL_ENABLE_PIN, LOW);
+	digitalWrite(MOTOR_CTL_A_PIN, HIGH);
+	digitalWrite(MOTOR_CTL_B_PIN, LOW);
+	digitalWrite(MOTOR_CTL_C_PIN, HIGH);  
+	digitalWrite(MOTOR_CTL_D_PIN, LOW); 
 	if (fadeIn) { 
 		for(int i = (maxSpeed/2); i <= maxSpeed; i += (maxSpeed/16)) {
-			analogWrite(MOTOR_CTL_ENABLE, i);  
+			analogWrite(MOTOR_CTL_ENABLE_PIN, i);  
 			delay(maxSpeed/8);
 		}
 	}
 	if (maxSpeed == 255)
-		digitalWrite(MOTOR_CTL_ENABLE, HIGH);
+		digitalWrite(MOTOR_CTL_ENABLE_PIN, HIGH);
 	else
-		analogWrite(MOTOR_CTL_ENABLE, maxSpeed);
+		analogWrite(MOTOR_CTL_ENABLE_PIN, maxSpeed);
 }
 
 float FRobot::ReadSonarDistance()
@@ -147,14 +152,14 @@ float FRobot::ReadSonarDistance()
 	/* The following trigPin/echoPin cycle is used to determine the
 	distance of the nearest object by bouncing soundwaves off of it. 
 	*/ 
-	digitalWrite(SONAR_TRIGGER, LOW); 
+	digitalWrite(SONAR_TRIGGER_PIN, LOW); 
 	delayMicroseconds(2);
 
-	digitalWrite(SONAR_TRIGGER, HIGH);
+	digitalWrite(SONAR_TRIGGER_PIN, HIGH);
 	delayMicroseconds(10); 
  
-	digitalWrite(SONAR_TRIGGER, LOW);
-	unsigned long duration = pulseIn(SONAR_ECHO, HIGH);
+	digitalWrite(SONAR_TRIGGER_PIN, LOW);
+	unsigned long duration = pulseIn(SONAR_ECHO_PIN, HIGH);
    
 	//Calculate the distance (in cm) based on the speed of sound.
 	return  duration/58.2f;

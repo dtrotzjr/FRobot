@@ -33,15 +33,15 @@ class FRobot {
   boolean mMovingForward;
   
   // Pin Assignments
-  static const byte MOTOR_CTL_A;
-  static const byte MOTOR_CTL_B;
-  static const byte MOTOR_CTL_ENABLE;
-  static const byte MOTOR_CTL_C;
-  static const byte MOTOR_CTL_D;
+  static const byte MOTOR_CTL_A_PIN;
+  static const byte MOTOR_CTL_B_PIN;
+  static const byte MOTOR_CTL_ENABLE_PIN;
+  static const byte MOTOR_CTL_C_PIN;
+  static const byte MOTOR_CTL_D_PIN;
   static const byte SERVO_STEERING_PIN;
   static const byte SERVO_SONAR_PIN;
-  static const byte SONAR_TRIGGER;
-  static const byte SONAR_ECHO;
+  static const byte SONAR_TRIGGER_PIN;
+  static const byte SONAR_ECHO_PIN;
   
   // Servo Centering Values
   static const byte STEERING_CENTER_ANGLE;
