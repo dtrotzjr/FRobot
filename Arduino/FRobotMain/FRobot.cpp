@@ -1,19 +1,19 @@
 #include "FRobot.h"
 
-const byte FRobot::MOTOR_CTL_A = 7;
-const byte FRobot::MOTOR_CTL_B = 8;
-const byte FRobot::MOTOR_CTL_ENABLE = 3;
-const byte FRobot::MOTOR_CTL_C = 12;
-const byte FRobot::MOTOR_CTL_D = 13;
-const byte FRobot::SERVO_STEERING_PIN = 9;
-const byte FRobot::SERVO_SONAR_PIN = 10;
-const byte FRobot::FRobot::SONAR_TRIGGER = 4;
-const byte FRobot::SONAR_ECHO = 5;
-const byte FRobot::STEERING_CENTER_ANGLE = 90;
-const byte FRobot::SONAR_CENTER_ANGLE = 90;
+const byte FRobot::MOTOR_CTL_A 				= 7;
+const byte FRobot::MOTOR_CTL_B 				= 8;
+const byte FRobot::MOTOR_CTL_ENABLE 		= 3;
+const byte FRobot::MOTOR_CTL_C 				= 12;
+const byte FRobot::MOTOR_CTL_D 				= 13;
+const byte FRobot::SERVO_STEERING_PIN 		= 9;
+const byte FRobot::SERVO_SONAR_PIN 			= 10;
+const byte FRobot::FRobot::SONAR_TRIGGER	= 4;
+const byte FRobot::SONAR_ECHO 				= 5;
+const byte FRobot::STEERING_CENTER_ANGLE 	= 90;
+const byte FRobot::SONAR_CENTER_ANGLE 		= 90;
 
-const byte FRobot::MAX_STEERING_ANGLE = 25;
-const byte FRobot::MAX_SCAN_ANGLE = 50;
+const byte FRobot::MAX_STEERING_ANGLE 		= 25;
+const byte FRobot::MAX_SCAN_ANGLE 			= 50;
 
 FRobot::FRobot() {
 }

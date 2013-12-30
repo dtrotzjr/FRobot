@@ -7,12 +7,6 @@ void setup() {
   robot.Initialize();
 }
 
-
-
-
-
-
-
 void loop() {
   robot.Step();
 }
