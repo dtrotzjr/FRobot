@@ -79,7 +79,6 @@ void FRobot::NavigateTowardClearestPath() {
 	else if (angle > 0)
 		multiplier = 1;
 	if (multiplier != 0) {
-		Serial.print("Angle:");Serial.print(angle);Serial.print(" AbsAngle:");Serial.print(absAngle);Serial.print(" Multiplier:");Serial.println(multiplier);
 		mSteerServo.write(STEERING_CENTER_ANGLE + (multiplier * MAX_STEERING_ANGLE));
 		GoBackward(true, 255);
 		double timeMultiplier = ((double)absAngle/(double)MAX_SCAN_ANGLE);
@@ -178,9 +177,7 @@ int FRobot::PerformScanForBestPath() {
 	delay(MAX_SCAN_ANGLE*4 + 25);
 	
 	int arrayIndex = 0;
-	Serial.print("+");	Serial.print(MAX_SCAN_ANGLE); Serial.print("+");
 	for(int currentAngle = -MAX_SCAN_ANGLE; currentAngle <= MAX_SCAN_ANGLE; currentAngle += SCAN_ANGLE_STEP) {
-		Serial.print(".");
 		mSonarServo.write(SONAR_CENTER_ANGLE + currentAngle);
 		delay(4*5 + 25);
 		
@@ -194,7 +191,6 @@ int FRobot::PerformScanForBestPath() {
 			furthestDistanceAngle = currentAngle;
 		}
 	}
-	Serial.println("-");
 	
 	mSonarServo.write(SONAR_CENTER_ANGLE);
 	delay(MAX_SCAN_ANGLE*4 + 25);
