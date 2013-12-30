@@ -16,12 +16,23 @@ class FRobot {
   void Stop();
   
   float ReadSonarDistance();
-  byte PerformScanForBestPath();
+  int PerformScanForBestPath();
   void NavigateTowardClearestPath();
   
+  void PostStatus();
+  
+  // Servos
   Servo mSteerServo;
   Servo mSonarServo;
-
+  
+  // Current State
+  float* mLastScanValues;
+  int* mLastScanAngles;
+  byte mLastScanValuesLength;
+  int mCurrentForwardClearance;
+  boolean mMovingForward;
+  
+  // Pin Assignments
   static const byte MOTOR_CTL_A;
   static const byte MOTOR_CTL_B;
   static const byte MOTOR_CTL_ENABLE;
@@ -31,9 +42,13 @@ class FRobot {
   static const byte SERVO_SONAR_PIN;
   static const byte SONAR_TRIGGER;
   static const byte SONAR_ECHO;
+  
+  // Servo Centering Values
   static const byte STEERING_CENTER_ANGLE;
   static const byte SONAR_CENTER_ANGLE;
   
+  // Magic Numbers for Servos
   static const byte MAX_STEERING_ANGLE;
   static const byte MAX_SCAN_ANGLE;
+  static const byte SCAN_ANGLE_STEP;
 };

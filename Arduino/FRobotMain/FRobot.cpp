@@ -14,11 +14,17 @@ const byte FRobot::SONAR_CENTER_ANGLE 		= 90;
 
 const byte FRobot::MAX_STEERING_ANGLE 		= 25;
 const byte FRobot::MAX_SCAN_ANGLE 			= 50;
+const byte FRobot::SCAN_ANGLE_STEP			= 5;
 
 FRobot::FRobot() {
+	mLastScanValuesLength = (2 * (MAX_SCAN_ANGLE/SCAN_ANGLE_STEP)) + 1;
+	mLastScanValues = new float[mLastScanValuesLength];
+	mLastScanAngles = new int[mLastScanValuesLength];
 }
 
 FRobot::~FRobot() {
+	delete [] mLastScanValues;
+	delete [] mLastScanAngles;
 }
 
 void FRobot::Initialize() {
@@ -36,20 +42,36 @@ void FRobot::Initialize() {
 	pinMode(MOTOR_CTL_C, OUTPUT);
 	pinMode(MOTOR_CTL_D, OUTPUT);
 	digitalWrite(MOTOR_CTL_ENABLE, LOW);
+	
+	mCurrentForwardClearance = 0;
+	for (int arrayIndex = 0; arrayIndex < mLastScanValuesLength; arrayIndex++) {
+		mLastScanValues[arrayIndex] = 0;
+		mLastScanAngles[arrayIndex] = 0;
+	}
+	mMovingForward = false;
 }
 
 void FRobot::Step() {
-	int clearance = (int)ReadSonarDistance();
-	if (clearance > 50) {
-		GoForward(false, 255);
+	mCurrentForwardClearance = (int)ReadSonarDistance();
+	if (mCurrentForwardClearance > 50) {
+		if (!mMovingForward)
+			GoForward(false, 255);
+		mMovingForward = true;
 	} else {
+		mMovingForward = false;
 		NavigateTowardClearestPath();
 	}
+	PostStatus();
+}
+
+void FRobot::PostStatus() {
+	
 }
 
 void FRobot::NavigateTowardClearestPath() {
 	Stop();
 	int angle = PerformScanForBestPath();
+	Serial.print("Scanned... ");Serial.println(angle);
 	int absAngle = abs(angle);
 	int multiplier = 0;
 	if (angle < 0)
@@ -57,9 +79,11 @@ void FRobot::NavigateTowardClearestPath() {
 	else if (angle > 0)
 		multiplier = 1;
 	if (multiplier != 0) {
+		Serial.print("Angle:");Serial.print(angle);Serial.print(" AbsAngle:");Serial.print(absAngle);Serial.print(" Multiplier:");Serial.println(multiplier);
 		mSteerServo.write(STEERING_CENTER_ANGLE + (multiplier * MAX_STEERING_ANGLE));
 		GoBackward(true, 255);
 		double timeMultiplier = ((double)absAngle/(double)MAX_SCAN_ANGLE);
+		Serial.print("Sleeping... ");Serial.println(timeMultiplier);
 		delay(1000 * timeMultiplier);
 		mSteerServo.write(STEERING_CENTER_ANGLE + (-1 * multiplier * MAX_STEERING_ANGLE));
 		GoForward(true, 255);
@@ -77,13 +101,15 @@ void FRobot::GoForward(boolean fadeIn, byte maxSpeed)
 	digitalWrite(MOTOR_CTL_C, LOW);  
 	digitalWrite(MOTOR_CTL_D, HIGH);    
 	if (fadeIn) { 
-		for(byte i = (maxSpeed/2); i <= maxSpeed; i += (maxSpeed/16)) {
+		for(int i = (maxSpeed/2); i <= maxSpeed; i += (maxSpeed/16)) {
 			analogWrite(MOTOR_CTL_ENABLE, i);  
 			delay(maxSpeed/8);
 		}
 	}
-	if (!fadeIn || maxSpeed == 255)
+	if (maxSpeed == 255)
 		digitalWrite(MOTOR_CTL_ENABLE, HIGH);
+	else
+		analogWrite(MOTOR_CTL_ENABLE, maxSpeed);
 }
 
 void FRobot::Stop()
@@ -106,13 +132,15 @@ void FRobot::GoBackward(boolean fadeIn, byte maxSpeed)
 	digitalWrite(MOTOR_CTL_C, HIGH);  
 	digitalWrite(MOTOR_CTL_D, LOW); 
 	if (fadeIn) { 
-		for(byte i = (maxSpeed/2); i <= maxSpeed; i += (maxSpeed/16)) {
+		for(int i = (maxSpeed/2); i <= maxSpeed; i += (maxSpeed/16)) {
 			analogWrite(MOTOR_CTL_ENABLE, i);  
 			delay(maxSpeed/8);
 		}
 	}
-	if (!fadeIn || maxSpeed == 255)
+	if (maxSpeed == 255)
 		digitalWrite(MOTOR_CTL_ENABLE, HIGH);
+	else
+		analogWrite(MOTOR_CTL_ENABLE, maxSpeed);
 }
 
 float FRobot::ReadSonarDistance()
@@ -135,25 +163,41 @@ float FRobot::ReadSonarDistance()
 
 /* 
  * Note: Servo seems to take less than 4ms per degree of motion.
+ * So you will see appropriate delays after each write command
+ * to the servo.
+ *
  * negative values indicate the right side of vehicle
  * positive values indicate the left side of vehicle
  */
-byte FRobot::PerformScanForBestPath() {
+int FRobot::PerformScanForBestPath() {
 	float furthestDistance = 0.0f;
 	float currentDistance = 0.0f;  
-	byte furthestDistanceAngle = 0;
+	int furthestDistanceAngle = 0;
+	
 	mSonarServo.write(SONAR_CENTER_ANGLE - MAX_SCAN_ANGLE);
 	delay(MAX_SCAN_ANGLE*4 + 25);
-	for(byte currentAngle = -MAX_SCAN_ANGLE; currentAngle <= MAX_SCAN_ANGLE; currentAngle += 5) {
+	
+	int arrayIndex = 0;
+	Serial.print("+");	Serial.print(MAX_SCAN_ANGLE); Serial.print("+");
+	for(int currentAngle = -MAX_SCAN_ANGLE; currentAngle <= MAX_SCAN_ANGLE; currentAngle += SCAN_ANGLE_STEP) {
+		Serial.print(".");
 		mSonarServo.write(SONAR_CENTER_ANGLE + currentAngle);
 		delay(4*5 + 25);
+		
 		currentDistance = ReadSonarDistance();
+		
+		mLastScanValues[arrayIndex] = currentDistance;
+		mLastScanAngles[arrayIndex] = currentAngle;
+		
 		if (currentDistance < 3000 && currentDistance > furthestDistance) {
 			furthestDistance = currentDistance;
 			furthestDistanceAngle = currentAngle;
 		}
 	}
+	Serial.println("-");
+	
 	mSonarServo.write(SONAR_CENTER_ANGLE);
 	delay(MAX_SCAN_ANGLE*4 + 25);
+	
 	return furthestDistanceAngle;
 }
