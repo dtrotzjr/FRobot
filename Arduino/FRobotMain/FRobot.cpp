@@ -20,16 +20,20 @@ const byte FRobot::MAX_STEERING_ANGLE 		= 25;
 const byte FRobot::MAX_SCAN_ANGLE 			= 50;
 const byte FRobot::SCAN_ANGLE_STEP			= 5;
 
+const int FRobot::MAX_INPUT_BUFFER_LEN		= 256;
+
 
 FRobot::FRobot() {
 	mLastScanValuesLength = (2 * (MAX_SCAN_ANGLE/SCAN_ANGLE_STEP)) + 1;
 	mLastScanValues = new float[mLastScanValuesLength];
 	mLastScanAngles = new int[mLastScanValuesLength];
+	mInputBuffer = new char[MAX_INPUT_BUFFER_LEN];
 }
 
 FRobot::~FRobot() {
 	delete [] mLastScanValues;
 	delete [] mLastScanAngles;
+	delete [] mInputBuffer;
 }
 
 void FRobot::Initialize() {
@@ -47,6 +51,9 @@ void FRobot::Initialize() {
 	pinMode(MOTOR_CTL_C_PIN, OUTPUT);
 	pinMode(MOTOR_CTL_D_PIN, OUTPUT);
 	digitalWrite(MOTOR_CTL_ENABLE_PIN, LOW);
+	
+	for(int bufferIndex = 0; bufferIndex < MAX_INPUT_BUFFER_LEN; ++bufferIndex)
+		mInputBuffer[bufferIndex] = 0;
 	
 	mCurrentForwardClearance = 0;
 	for (int arrayIndex = 0; arrayIndex < mLastScanValuesLength; arrayIndex++) {
@@ -101,14 +108,18 @@ boolean FRobot::InAutoMode() {
 		int length = Serial.readBytesUntil('\n', mInputBuffer, MAX_INPUT_BUFFER_LEN);
 		ParseInputBufer(length);
 	}
+	Serial.print("Scanned... ");Serial.println(angle);
 	return mAutoMode;
+}
+
+void FRobot::ParseInputBufer(int length) {
 	
 }
 
 void FRobot::NavigateTowardClearestPath() {
 	Stop();
 	int angle = PerformScanForBestPath();
-	Serial.print("Scanned... ");Serial.println(angle);
+		Serial.print("Sleeping... ");Serial.println(timeMultiplier);
 	int absAngle = abs(angle);
 	int multiplier = 0;
 	if (angle < 0)
@@ -119,7 +130,6 @@ void FRobot::NavigateTowardClearestPath() {
 		mSteerServo.write(STEERING_CENTER_ANGLE + (multiplier * MAX_STEERING_ANGLE));
 		GoBackward(true, 255);
 		double timeMultiplier = ((double)absAngle/(double)MAX_SCAN_ANGLE);
-		Serial.print("Sleeping... ");Serial.println(timeMultiplier);
 		delay(1000 * timeMultiplier);
 		mSteerServo.write(STEERING_CENTER_ANGLE + (-1 * multiplier * MAX_STEERING_ANGLE));
 		GoForward(true, 255);

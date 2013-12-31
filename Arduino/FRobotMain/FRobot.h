@@ -23,6 +23,7 @@ class FRobot {
   
   boolean InAutoMode();
   void ParseInputBufer();
+  
   // Servos
   Servo mSteerServo;
   Servo mSonarServo;
@@ -33,6 +34,9 @@ class FRobot {
   byte mLastScanValuesLength;
   int mCurrentForwardClearance;
   boolean mMovingForward;
+  boolean mAutoMode;
+  
+  char* mInputBuffer;
   
   // Pin Assignments
   static const byte MOTOR_CTL_A_PIN;
@@ -53,4 +57,6 @@ class FRobot {
   static const byte MAX_STEERING_ANGLE;
   static const byte MAX_SCAN_ANGLE;
   static const byte SCAN_ANGLE_STEP;
+  
+  static const int MAX_INPUT_BUFFER_LEN;
 };
