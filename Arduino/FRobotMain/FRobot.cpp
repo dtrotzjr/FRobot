@@ -222,6 +222,7 @@ int FRobot::PerformScanForBestPath() {
 		
 		mLastScanValues[arrayIndex] = currentDistance;
 		mLastScanAngles[arrayIndex] = currentAngle;
+		arrayIndex++;
 		
 		if (currentDistance < 3000 && currentDistance > furthestDistance) {
 			furthestDistance = currentDistance;
