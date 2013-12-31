@@ -22,7 +22,7 @@ class FRobot {
   void PostStatus();
   
   boolean InAutoMode();
-  void ParseInputBufer(int length);
+  void ParseInputBufer();
   
   // Servos
   Servo mSteerServo;
@@ -59,4 +59,18 @@ class FRobot {
   static const byte SCAN_ANGLE_STEP;
   
   static const int MAX_INPUT_BUFFER_LEN;
+  
+  // Serial Commands
+  static const char* SERIAL_COMMAND_CLEARANCE;
+  static const char* SERIAL_COMMAND_MOVING;
+  static const char* SERIAL_COMMAND_SONAR_PREFIX;
+  static const char* SERIAL_COMMAND_SONAR_POSTFIX;
+
+  static const char* SERIAL_COMMAND_AUTO;
+  static const char* SERIAL_COMMAND_OVERRIDE;
+  static const char* SERIAL_COMMAND_DPAD_PREFIX;
+  static const char* SERIAL_COMMAND_DPAD_FORWARD_POSTFIX;
+  static const char* SERIAL_COMMAND_DPAD_REVERSE_POSTFIX;  
+  static const char* SERIAL_COMMAND_DPAD_LEFT_POSTFIX;  
+  static const char* SERIAL_COMMAND_DPAD_RIGHT_POSTFIX;      
 };

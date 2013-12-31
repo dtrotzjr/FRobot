@@ -22,6 +22,20 @@ const byte FRobot::SCAN_ANGLE_STEP			= 5;
 
 const int FRobot::MAX_INPUT_BUFFER_LEN		= 256;
 
+// Serial Commands
+const char* FRobot::SERIAL_COMMAND_CLEARANCE			= "FR+CLR:";
+const char* FRobot::SERIAL_COMMAND_MOVING				= "FR+MOV:";
+const char* FRobot::SERIAL_COMMAND_SONAR_PREFIX			= "FR+SONAR:{";
+const char* FRobot::SERIAL_COMMAND_SONAR_POSTFIX		= "}";
+
+const char* FRobot::SERIAL_COMMAND_AUTO					= "FR+AUTO";
+const char* FRobot::SERIAL_COMMAND_OVERRIDE				= "FR+OVERRIDE";		
+const char* FRobot::SERIAL_COMMAND_DPAD_PREFIX			= "FR+DPAD";
+const char* FRobot::SERIAL_COMMAND_DPAD_FORWARD_POSTFIX	= "F";
+const char* FRobot::SERIAL_COMMAND_DPAD_REVERSE_POSTFIX	= "R";
+const char* FRobot::SERIAL_COMMAND_DPAD_LEFT_POSTFIX	= "L"; 
+const char* FRobot::SERIAL_COMMAND_DPAD_RIGHT_POSTFIX	= "R";
+
 
 FRobot::FRobot() {
 	mLastScanValuesLength = (2 * (MAX_SCAN_ANGLE/SCAN_ANGLE_STEP)) + 1;
@@ -78,14 +92,14 @@ void FRobot::Step() {
 }
 
 void FRobot::PostStatus() {
-	Serial.print("FR+CLR:");
+	Serial.print(SERIAL_COMMAND_CLEARANCE);
 	Serial.println(mCurrentForwardClearance);
-	Serial.print("FR+MOV:");
+	Serial.print(SERIAL_COMMAND_MOVING);
 	Serial.println(mMovingForward);	
-	
+
+	Serial.print(SERIAL_COMMAND_SONAR_PREFIX);
 	if(!mMovingForward)
 	{
-		Serial.print("FR+SONAR:{");		
 		for(int i = 0; i < mLastScanValuesLength; ++i)
 		{
 			Serial.print("(");
@@ -94,25 +108,28 @@ void FRobot::PostStatus() {
 			Serial.print(mLastScanValues[i]);		
 			Serial.print(") ");
 		}
-		Serial.println("}");	
 	}
-	else
-	{
-		Serial.println("FR+SONAR:{}");
-	}
+	Serial.println(SERIAL_COMMAND_SONAR_POSTFIX);	
 }
 
 boolean FRobot::InAutoMode() {
-	if(Serial.peek() != -1) {
-		
-		int length = Serial.readBytesUntil('\n', mInputBuffer, MAX_INPUT_BUFFER_LEN);
-		ParseInputBufer(length);
-	}
 	return mAutoMode;
 }
 
-void FRobot::ParseInputBufer(int length) {
-	
+void FRobot::ParseInputBufer() {
+	if(Serial.peek() != -1) {
+		
+		int len = Serial.readBytesUntil('\n', mInputBuffer, MAX_INPUT_BUFFER_LEN);
+		mInputBuffer[len] = 0;
+		String input = String(mInputBuffer);
+		if(input.startsWith(SERIAL_COMMAND_AUTO)) {
+			mAutoMode = true;
+		} else if(mAutoMode && input.startsWith(SERIAL_COMMAND_AUTO)) {
+			mAutoMode = false;
+		} else if(!mAutoMode && input.startsWith(SERIAL_COMMAND_DPAD_PREFIX)) {
+			char direction = input.charAt(7);
+		}
+	}
 }
 
 void FRobot::NavigateTowardClearestPath() {
