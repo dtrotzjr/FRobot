@@ -108,7 +108,6 @@ boolean FRobot::InAutoMode() {
 		int length = Serial.readBytesUntil('\n', mInputBuffer, MAX_INPUT_BUFFER_LEN);
 		ParseInputBufer(length);
 	}
-	Serial.print("Scanned... ");Serial.println(angle);
 	return mAutoMode;
 }
 
@@ -119,7 +118,6 @@ void FRobot::ParseInputBufer(int length) {
 void FRobot::NavigateTowardClearestPath() {
 	Stop();
 	int angle = PerformScanForBestPath();
-		Serial.print("Sleeping... ");Serial.println(timeMultiplier);
 	int absAngle = abs(angle);
 	int multiplier = 0;
 	if (angle < 0)
