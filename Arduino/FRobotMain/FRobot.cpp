@@ -33,7 +33,7 @@ FRobot::~FRobot() {
 }
 
 void FRobot::Initialize() {
-	Serial.begin(115200);
+	Serial.begin(57600);
  
 	mSteerServo.attach(SERVO_STEERING_PIN);
 	mSteerServo.write(STEERING_CENTER_ANGLE);  
