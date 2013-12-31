@@ -21,6 +21,8 @@ class FRobot {
   
   void PostStatus();
   
+  boolean InAutoMode();
+  void ParseInputBufer();
   // Servos
   Servo mSteerServo;
   Servo mSonarServo;

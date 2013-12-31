@@ -54,6 +54,7 @@ void FRobot::Initialize() {
 		mLastScanAngles[arrayIndex] = 0;
 	}
 	mMovingForward = false;
+	mAutoMode = true;
 }
 
 void FRobot::Step() {
@@ -70,6 +71,37 @@ void FRobot::Step() {
 }
 
 void FRobot::PostStatus() {
+	Serial.print("FR+CLR:");
+	Serial.println(mCurrentForwardClearance);
+	Serial.print("FR+MOV:");
+	Serial.println(mMovingForward);	
+	
+	if(!mMovingForward)
+	{
+		Serial.print("FR+SONAR:{");		
+		for(int i = 0; i < mLastScanValuesLength; ++i)
+		{
+			Serial.print("(");
+			Serial.print(mLastScanAngles[i]);
+			Serial.print(",");
+			Serial.print(mLastScanValues[i]);		
+			Serial.print(") ");
+		}
+		Serial.println("}");	
+	}
+	else
+	{
+		Serial.println("FR+SONAR:{}");
+	}
+}
+
+boolean FRobot::InAutoMode() {
+	if(Serial.peek() != -1) {
+		
+		int length = Serial.readBytesUntil('\n', mInputBuffer, MAX_INPUT_BUFFER_LEN);
+		ParseInputBufer(length);
+	}
+	return mAutoMode;
 	
 }
 
