@@ -22,7 +22,7 @@ class FRobot {
   void PostStatus();
   
   boolean InAutoMode();
-  void ParseInputBufer();
+  void ParseInputBufer(int length);
   
   // Servos
   Servo mSteerServo;
