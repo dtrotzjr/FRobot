@@ -13,6 +13,8 @@ class FRobot {
   protected:
   void GoForward(boolean fadeIn, byte maxSpeed);
   void GoBackward(boolean fadeIn, byte maxSpeed);
+  void TurnWheelsLeft(byte angle);
+  void TurnWheelsRight(byte angle);
   void Stop();
   
   float ReadSonarDistance();
@@ -61,16 +63,17 @@ class FRobot {
   static const int MAX_INPUT_BUFFER_LEN;
   
   // Serial Commands
-  static const char* SERIAL_COMMAND_CLEARANCE;
-  static const char* SERIAL_COMMAND_MOVING;
-  static const char* SERIAL_COMMAND_SONAR_PREFIX;
-  static const char* SERIAL_COMMAND_SONAR_POSTFIX;
+  static String SERIAL_COMMAND_CLEARANCE;
+  static String SERIAL_COMMAND_MOVING;
+  static String SERIAL_COMMAND_SONAR_PREFIX;
+  static String SERIAL_COMMAND_SONAR_POSTFIX;
 
-  static const char* SERIAL_COMMAND_AUTO;
-  static const char* SERIAL_COMMAND_OVERRIDE;
-  static const char* SERIAL_COMMAND_DPAD_PREFIX;
-  static const char* SERIAL_COMMAND_DPAD_FORWARD_POSTFIX;
-  static const char* SERIAL_COMMAND_DPAD_REVERSE_POSTFIX;  
-  static const char* SERIAL_COMMAND_DPAD_LEFT_POSTFIX;  
-  static const char* SERIAL_COMMAND_DPAD_RIGHT_POSTFIX;      
+  static String SERIAL_COMMAND_AUTO;
+  static String SERIAL_COMMAND_OVERRIDE;
+  static String SERIAL_COMMAND_DPAD_PREFIX;
+  static String SERIAL_COMMAND_DPAD_FORWARD_POSTFIX;
+  static String SERIAL_COMMAND_DPAD_REVERSE_POSTFIX;  
+  static String SERIAL_COMMAND_DPAD_LEFT_POSTFIX;  
+  static String SERIAL_COMMAND_DPAD_RIGHT_POSTFIX;
+  static String SERIAL_COMMAND_DPAD_STOP_POSTFIX;    
 };

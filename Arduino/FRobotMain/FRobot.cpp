@@ -23,18 +23,19 @@ const byte FRobot::SCAN_ANGLE_STEP			= 5;
 const int FRobot::MAX_INPUT_BUFFER_LEN		= 256;
 
 // Serial Commands
-const char* FRobot::SERIAL_COMMAND_CLEARANCE			= "FR+CLR:";
-const char* FRobot::SERIAL_COMMAND_MOVING				= "FR+MOV:";
-const char* FRobot::SERIAL_COMMAND_SONAR_PREFIX			= "FR+SONAR:{";
-const char* FRobot::SERIAL_COMMAND_SONAR_POSTFIX		= "}";
+String FRobot::SERIAL_COMMAND_CLEARANCE				= "FR+CLR:";
+String FRobot::SERIAL_COMMAND_MOVING				= "FR+MOV:";
+String FRobot::SERIAL_COMMAND_SONAR_PREFIX			= "FR+SONAR:{";
+String FRobot::SERIAL_COMMAND_SONAR_POSTFIX			= "}";
 
-const char* FRobot::SERIAL_COMMAND_AUTO					= "FR+AUTO";
-const char* FRobot::SERIAL_COMMAND_OVERRIDE				= "FR+OVERRIDE";		
-const char* FRobot::SERIAL_COMMAND_DPAD_PREFIX			= "FR+DPAD";
-const char* FRobot::SERIAL_COMMAND_DPAD_FORWARD_POSTFIX	= "F";
-const char* FRobot::SERIAL_COMMAND_DPAD_REVERSE_POSTFIX	= "R";
-const char* FRobot::SERIAL_COMMAND_DPAD_LEFT_POSTFIX	= "L"; 
-const char* FRobot::SERIAL_COMMAND_DPAD_RIGHT_POSTFIX	= "R";
+String FRobot::SERIAL_COMMAND_AUTO					= "FR+AUTO";
+String FRobot::SERIAL_COMMAND_OVERRIDE				= "FR+OVERRIDE";		
+String FRobot::SERIAL_COMMAND_DPAD_PREFIX			= "FR+DPAD";
+String FRobot::SERIAL_COMMAND_DPAD_FORWARD_POSTFIX	= "F";
+String FRobot::SERIAL_COMMAND_DPAD_REVERSE_POSTFIX	= "R";
+String FRobot::SERIAL_COMMAND_DPAD_LEFT_POSTFIX		= "L"; 
+String FRobot::SERIAL_COMMAND_DPAD_RIGHT_POSTFIX	= "R";
+String FRobot::SERIAL_COMMAND_DPAD_STOP_POSTFIX		= "S";
 
 
 FRobot::FRobot() {
@@ -80,13 +81,16 @@ void FRobot::Initialize() {
 
 void FRobot::Step() {
 	mCurrentForwardClearance = (int)ReadSonarDistance();
-	if (mCurrentForwardClearance > 50) {
-		if (!mMovingForward)
-			GoForward(false, 255);
-		mMovingForward = true;
-	} else {
-		mMovingForward = false;
-		NavigateTowardClearestPath();
+	ParseInputBufer();
+	if (mAutoMode) {
+		if (mCurrentForwardClearance > 50) {
+			if (!mMovingForward)
+				GoForward(false, 255);
+			mMovingForward = true;
+		} else {
+			mMovingForward = false;
+			NavigateTowardClearestPath();
+		}
 	}
 	PostStatus();
 }
@@ -117,8 +121,7 @@ boolean FRobot::InAutoMode() {
 }
 
 void FRobot::ParseInputBufer() {
-	if(Serial.peek() != -1) {
-		
+	while(Serial.peek() != -1) {
 		int len = Serial.readBytesUntil('\n', mInputBuffer, MAX_INPUT_BUFFER_LEN);
 		mInputBuffer[len] = 0;
 		String input = String(mInputBuffer);
@@ -127,7 +130,18 @@ void FRobot::ParseInputBufer() {
 		} else if(mAutoMode && input.startsWith(SERIAL_COMMAND_AUTO)) {
 			mAutoMode = false;
 		} else if(!mAutoMode && input.startsWith(SERIAL_COMMAND_DPAD_PREFIX)) {
-			char direction = input.charAt(7);
+			int prefixLen = SERIAL_COMMAND_DPAD_PREFIX.length();
+			char direction = input.charAt(prefixLen);
+			String magnitudeStr = input.substring(prefixLen + 1);
+			int magnitude = magnitudeStr.toInt();
+			if (direction == SERIAL_COMMAND_DPAD_FORWARD_POSTFIX.charAt(0))
+				GoForward(false, magnitude);
+			else if (direction == SERIAL_COMMAND_DPAD_REVERSE_POSTFIX.charAt(0))
+				GoBackward(false, magnitude);
+			else if (direction == SERIAL_COMMAND_DPAD_LEFT_POSTFIX.charAt(0))
+				TurnWheelsLeft(magnitude);
+			else if (direction == SERIAL_COMMAND_DPAD_RIGHT_POSTFIX.charAt(0))
+				TurnWheelsRight(magnitude);
 		}
 	}
 }
@@ -171,6 +185,16 @@ void FRobot::GoForward(boolean fadeIn, byte maxSpeed)
 		digitalWrite(MOTOR_CTL_ENABLE_PIN, HIGH);
 	else
 		analogWrite(MOTOR_CTL_ENABLE_PIN, maxSpeed);
+}
+
+void FRobot::TurnWheelsLeft(byte angle)
+{
+	
+}
+
+void FRobot::TurnWheelsRight(byte angle)
+{
+	
 }
 
 void FRobot::Stop()
