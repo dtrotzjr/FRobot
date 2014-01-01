@@ -101,7 +101,7 @@ void FRobot::PostStatus() {
     Serial.print(SERIAL_COMMAND_MOVING);
     Serial.println(mMovingForward); 
 
-    PostSonarResults(); 
+    PostSonarStatus(); 
 }
 
 void FRobot::PostSonarStatus() {
@@ -148,18 +148,18 @@ void FRobot::ParseInputBufer() {
                 GoForward(false, magnitude);
             else if (SERIAL_COMMAND_DPAD_REVERSE_POSTFIX.equals(direction))
                 GoBackward(false, magnitude);
-            else if (direction == SERIAL_COMMAND_DPAD_LEFT_POSTFIX.equals(direction))
+            else if (SERIAL_COMMAND_DPAD_LEFT_POSTFIX.equals(direction))
                 TurnWheelsLeft(magnitude);
-            else if (direction == SERIAL_COMMAND_DPAD_RIGHT_POSTFIX.equals(direction))
+            else if (SERIAL_COMMAND_DPAD_RIGHT_POSTFIX.equals(direction))
                 TurnWheelsRight(magnitude);
-            else if (direction == SERIAL_COMMAND_DPAD_STOP_POSTFIX.equals(direction))
+            else if (SERIAL_COMMAND_DPAD_STOP_POSTFIX.equals(direction))
                 Stop(magnitude);            
         }
     }
 }
 
 void FRobot::NavigateTowardClearestPath() {
-    Stop();
+    Stop(true);
     int angle = PerformScanForBestPath();
     int absAngle = abs(angle);
     int multiplier = 0;
@@ -168,14 +168,14 @@ void FRobot::NavigateTowardClearestPath() {
     else if (angle > 0)
         multiplier = 1;
     if (multiplier != 0) {
-        mSteerServo.write(STEERING_CENTER_ANGLE + (multiplier * MAX_STEERING_ANGLE));
+        TurnWheels(MAX_STEERING_ANGLE, multiplier);
         GoBackward(true, 255);
         double timeMultiplier = ((double)absAngle/(double)MAX_SCAN_ANGLE);
         delay(1000 * timeMultiplier);
-        mSteerServo.write(STEERING_CENTER_ANGLE + (-1 * multiplier * MAX_STEERING_ANGLE));
+        TurnWheels(MAX_STEERING_ANGLE, -multiplier);
         GoForward(true, 255);
         delay(750 * timeMultiplier);
-        Stop();
+        Stop(true);
         mSteerServo.write(STEERING_CENTER_ANGLE);
     }
 }
@@ -201,12 +201,19 @@ void FRobot::GoForward(boolean fadeIn, byte maxSpeed)
 
 void FRobot::TurnWheelsLeft(byte angle)
 {
-    
+    TurnWheels(angle, -1);
 }
 
 void FRobot::TurnWheelsRight(byte angle)
 {
-    
+    TurnWheels(angle, 1);    
+}
+
+void FRobot::TurnWheels(byte angle, int multiplier)
+{
+    if (angle > MAX_STEERING_ANGLE)
+        angle = MAX_STEERING_ANGLE;
+    mSteerServo.write(STEERING_CENTER_ANGLE + (multiplier * angle));
 }
 
 void FRobot::Stop(boolean useBreak)

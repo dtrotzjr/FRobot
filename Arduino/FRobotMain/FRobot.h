@@ -15,6 +15,7 @@ protected:
     void GoBackward(boolean fadeIn, byte maxSpeed);
     void TurnWheelsLeft(byte angle);
     void TurnWheelsRight(byte angle);
+    void TurnWheels(byte angle, int multiplier);
     void Stop(boolean useBreak);
   
     float ReadSonarDistance();
