@@ -37,6 +37,7 @@ String FRobot::SERIAL_COMMAND_DPAD_LEFT_POSTFIX     = "L:";
 String FRobot::SERIAL_COMMAND_DPAD_RIGHT_POSTFIX    = "R:";
 String FRobot::SERIAL_COMMAND_DPAD_STOP_POSTFIX     = "S:";
 
+#define TEST_WITHOUT_MOTORS
 
 FRobot::FRobot() {
     mLastScanValuesLength = (2 * (MAX_SCAN_ANGLE/SCAN_ANGLE_STEP)) + 1;
@@ -182,6 +183,7 @@ void FRobot::NavigateTowardClearestPath() {
 
 void FRobot::GoForward(boolean fadeIn, byte maxSpeed)
 {
+#ifndef TEST_WITHOUT_MOTORS
     digitalWrite(MOTOR_CTL_ENABLE_PIN, LOW);
     digitalWrite(MOTOR_CTL_A_PIN, LOW);
     digitalWrite(MOTOR_CTL_B_PIN, HIGH);
@@ -197,6 +199,7 @@ void FRobot::GoForward(boolean fadeIn, byte maxSpeed)
         digitalWrite(MOTOR_CTL_ENABLE_PIN, HIGH);
     else
         analogWrite(MOTOR_CTL_ENABLE_PIN, maxSpeed);
+#endif    
 }
 
 void FRobot::TurnWheelsLeft(byte angle)
@@ -232,6 +235,7 @@ void FRobot::Stop(boolean useBreak)
 
 void FRobot::GoBackward(boolean fadeIn, byte maxSpeed)
 {
+#ifndef TEST_WITHOUT_MOTORS    
     digitalWrite(MOTOR_CTL_ENABLE_PIN, LOW);
     digitalWrite(MOTOR_CTL_A_PIN, HIGH);
     digitalWrite(MOTOR_CTL_B_PIN, LOW);
@@ -247,6 +251,7 @@ void FRobot::GoBackward(boolean fadeIn, byte maxSpeed)
         digitalWrite(MOTOR_CTL_ENABLE_PIN, HIGH);
     else
         analogWrite(MOTOR_CTL_ENABLE_PIN, maxSpeed);
+#endif
 }
 
 float FRobot::ReadSonarDistance()
