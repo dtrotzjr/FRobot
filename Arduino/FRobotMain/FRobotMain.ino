@@ -4,9 +4,9 @@
 FRobot robot;
 
 void setup() {
-  robot.Initialize();
+    robot.Initialize();
 }
 
 void loop() {
-  robot.Step();
+    robot.Step();
 }
