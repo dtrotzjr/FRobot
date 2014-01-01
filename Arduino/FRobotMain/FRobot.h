@@ -15,7 +15,7 @@ class FRobot {
   void GoBackward(boolean fadeIn, byte maxSpeed);
   void TurnWheelsLeft(byte angle);
   void TurnWheelsRight(byte angle);
-  void Stop();
+  void Stop(boolean useBreak);
   
   float ReadSonarDistance();
   int PerformScanForBestPath();

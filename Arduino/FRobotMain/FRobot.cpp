@@ -197,16 +197,18 @@ void FRobot::TurnWheelsRight(byte angle)
 	
 }
 
-void FRobot::Stop()
+void FRobot::Stop(boolean useBreak)
 {
 	digitalWrite(MOTOR_CTL_ENABLE_PIN, LOW);
-	digitalWrite(MOTOR_CTL_A_PIN, HIGH);
-	digitalWrite(MOTOR_CTL_B_PIN, HIGH);
-	digitalWrite(MOTOR_CTL_C_PIN, HIGH);  
-	digitalWrite(MOTOR_CTL_D_PIN, HIGH);    
-	digitalWrite(MOTOR_CTL_ENABLE_PIN, HIGH);  
-	delay(1000);
-	digitalWrite(MOTOR_CTL_ENABLE_PIN, LOW);  
+	if (useBreak) {
+		digitalWrite(MOTOR_CTL_A_PIN, HIGH);
+		digitalWrite(MOTOR_CTL_B_PIN, HIGH);
+		digitalWrite(MOTOR_CTL_C_PIN, HIGH);  
+		digitalWrite(MOTOR_CTL_D_PIN, HIGH);    
+		digitalWrite(MOTOR_CTL_ENABLE_PIN, HIGH);  
+		delay(1000);
+		digitalWrite(MOTOR_CTL_ENABLE_PIN, LOW);
+	}  
 }
 
 void FRobot::GoBackward(boolean fadeIn, byte maxSpeed)
