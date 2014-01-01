@@ -65,17 +65,18 @@ protected:
     static const int MAX_INPUT_BUFFER_LEN;
   
     // Serial Commands
-    static String SERIAL_COMMAND_CLEARANCE;
-    static String SERIAL_COMMAND_MOVING;
-    static String SERIAL_COMMAND_SONAR_PREFIX;
-    static String SERIAL_COMMAND_SONAR_POSTFIX;
+    static String SERIAL_SEND_CLEARANCE;
+    static String SERIAL_SEND_MOVING;
+    static String SERIAL_SEND_AUTO;
+    static String SERIAL_SEND_SONAR_PREFIX;
+    static String SERIAL_SEND_SONAR_POSTFIX;
 
-    static String SERIAL_COMMAND_AUTO;
-    static String SERIAL_COMMAND_OVERRIDE;
-    static String SERIAL_COMMAND_DPAD_PREFIX;
-    static String SERIAL_COMMAND_DPAD_FORWARD_POSTFIX;
-    static String SERIAL_COMMAND_DPAD_REVERSE_POSTFIX;  
-    static String SERIAL_COMMAND_DPAD_LEFT_POSTFIX;  
-    static String SERIAL_COMMAND_DPAD_RIGHT_POSTFIX;
-    static String SERIAL_COMMAND_DPAD_STOP_POSTFIX;    
+    static String SERIAL_RECEIVE_AUTO;
+    static String SERIAL_RECEIVE_OVERRIDE;
+    static String SERIAL_RECEIVE_DPAD_PREFIX;
+    static String SERIAL_RECEIVE_DPAD_FORWARD_POSTFIX;
+    static String SERIAL_RECEIVE_DPAD_REVERSE_POSTFIX;  
+    static String SERIAL_RECEIVE_DPAD_LEFT_POSTFIX;  
+    static String SERIAL_RECEIVE_DPAD_RIGHT_POSTFIX;
+    static String SERIAL_RECEIVE_DPAD_STOP_POSTFIX;    
 };

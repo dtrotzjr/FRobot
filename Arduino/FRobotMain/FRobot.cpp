@@ -23,19 +23,20 @@ const byte FRobot::SCAN_ANGLE_STEP          = 5;
 const int FRobot::MAX_INPUT_BUFFER_LEN      = 256;
 
 // Serial Commands
-String FRobot::SERIAL_COMMAND_CLEARANCE             = "FR+CLR:";
-String FRobot::SERIAL_COMMAND_MOVING                = "FR+MOV:";
-String FRobot::SERIAL_COMMAND_SONAR_PREFIX          = "FR+SONAR:{";
-String FRobot::SERIAL_COMMAND_SONAR_POSTFIX         = "}";
+String FRobot::SERIAL_SEND_CLEARANCE                = "FS+CLR:";
+String FRobot::SERIAL_SEND_MOVING                   = "FS+MOV:";
+String FRobot::SERIAL_SEND_AUTO                     = "FS+AUTO:";
+String FRobot::SERIAL_SEND_SONAR_PREFIX             = "FS+SONAR:{";
+String FRobot::SERIAL_SEND_SONAR_POSTFIX            = "}";
 
-String FRobot::SERIAL_COMMAND_AUTO                  = "FR+AUTO";
-String FRobot::SERIAL_COMMAND_OVERRIDE              = "FR+OVERRIDE";        
-String FRobot::SERIAL_COMMAND_DPAD_PREFIX           = "FR+DPAD:";
-String FRobot::SERIAL_COMMAND_DPAD_FORWARD_POSTFIX  = "F:";
-String FRobot::SERIAL_COMMAND_DPAD_REVERSE_POSTFIX  = "R:";
-String FRobot::SERIAL_COMMAND_DPAD_LEFT_POSTFIX     = "L:"; 
-String FRobot::SERIAL_COMMAND_DPAD_RIGHT_POSTFIX    = "R:";
-String FRobot::SERIAL_COMMAND_DPAD_STOP_POSTFIX     = "S:";
+String FRobot::SERIAL_RECEIVE_AUTO                  = "FR+AUTO";
+String FRobot::SERIAL_RECEIVE_OVERRIDE              = "FR+OVERRIDE";        
+String FRobot::SERIAL_RECEIVE_DPAD_PREFIX           = "FR+DPAD:";
+String FRobot::SERIAL_RECEIVE_DPAD_FORWARD_POSTFIX  = "FWD:";
+String FRobot::SERIAL_RECEIVE_DPAD_REVERSE_POSTFIX  = "REV:";
+String FRobot::SERIAL_RECEIVE_DPAD_LEFT_POSTFIX     = "LT:"; 
+String FRobot::SERIAL_RECEIVE_DPAD_RIGHT_POSTFIX    = "RT:";
+String FRobot::SERIAL_RECEIVE_DPAD_STOP_POSTFIX     = "S:";
 
 #define TEST_WITHOUT_MOTORS
 
@@ -97,17 +98,18 @@ void FRobot::Step() {
 }
 
 void FRobot::PostStatus() {
-    Serial.print(SERIAL_COMMAND_CLEARANCE);
+    Serial.print(SERIAL_SEND_CLEARANCE);
     Serial.println(mCurrentForwardClearance);
-    Serial.print(SERIAL_COMMAND_MOVING);
+    Serial.print(SERIAL_SEND_MOVING);
     Serial.println(mMovingForward); 
-
+    Serial.print(SERIAL_SEND_AUTO);
+    Serial.println(mAutoMode); 
     PostSonarStatus(); 
 }
 
 void FRobot::PostSonarStatus() {
-    Serial.print(SERIAL_COMMAND_SONAR_PREFIX);
-    if(!mMovingForward)
+    Serial.print(SERIAL_SEND_SONAR_PREFIX);
+    if(!mMovingForward && mAutoMode)
     {
         for(int i = 0; i < mLastScanValuesLength; ++i)
         {
@@ -124,7 +126,7 @@ void FRobot::PostSonarStatus() {
         Serial.print(mCurrentForwardClearance);     
         Serial.print(") ");
     }
-    Serial.println(SERIAL_COMMAND_SONAR_POSTFIX);
+    Serial.println(SERIAL_SEND_SONAR_POSTFIX);
 }
 
 boolean FRobot::InAutoMode() {
@@ -136,24 +138,25 @@ void FRobot::ParseInputBufer() {
         int len = Serial.readBytesUntil('\n', mInputBuffer, MAX_INPUT_BUFFER_LEN);
         mInputBuffer[len] = 0;
         String input = String(mInputBuffer);
-        if(input.startsWith(SERIAL_COMMAND_AUTO)) {
+        if(input.equals(SERIAL_RECEIVE_AUTO)) {
             mAutoMode = true;
-        } else if(mAutoMode && input.startsWith(SERIAL_COMMAND_AUTO)) {
+        } else if(mAutoMode && input.equals(SERIAL_RECEIVE_OVERRIDE)) {
             mAutoMode = false;
-        } else if(!mAutoMode && input.startsWith(SERIAL_COMMAND_DPAD_PREFIX)) {
-            int prefixLen = SERIAL_COMMAND_DPAD_PREFIX.length();
-            String direction = input.substring(prefixLen, prefixLen + 1);
-            String magnitudeStr = input.substring(prefixLen + 2);
-            int magnitude = magnitudeStr.toInt();
-            if (SERIAL_COMMAND_DPAD_FORWARD_POSTFIX.equals(direction))
+        } else if(!mAutoMode && input.startsWith(SERIAL_RECEIVE_DPAD_PREFIX)) {
+            int prefixLen = SERIAL_RECEIVE_DPAD_PREFIX.length();
+            int cmdEndIndex = input.indexOf(':', prefixLen) + 1;
+            String direction = input.substring(prefixLen, cmdEndIndex);
+            String magnitudeStr = input.substring(cmdEndIndex);
+            int magnitude = magnitudeStr.toInt();            
+            if (SERIAL_RECEIVE_DPAD_FORWARD_POSTFIX.equals(direction))
                 GoForward(false, magnitude);
-            else if (SERIAL_COMMAND_DPAD_REVERSE_POSTFIX.equals(direction))
+            else if (SERIAL_RECEIVE_DPAD_REVERSE_POSTFIX.equals(direction))
                 GoBackward(false, magnitude);
-            else if (SERIAL_COMMAND_DPAD_LEFT_POSTFIX.equals(direction))
+            else if (SERIAL_RECEIVE_DPAD_LEFT_POSTFIX.equals(direction))
                 TurnWheelsLeft(magnitude);
-            else if (SERIAL_COMMAND_DPAD_RIGHT_POSTFIX.equals(direction))
+            else if (SERIAL_RECEIVE_DPAD_RIGHT_POSTFIX.equals(direction))
                 TurnWheelsRight(magnitude);
-            else if (SERIAL_COMMAND_DPAD_STOP_POSTFIX.equals(direction))
+            else if (SERIAL_RECEIVE_DPAD_STOP_POSTFIX.equals(direction))
                 Stop(magnitude);            
         }
     }
