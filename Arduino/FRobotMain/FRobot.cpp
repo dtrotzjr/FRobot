@@ -30,12 +30,12 @@ String FRobot::SERIAL_COMMAND_SONAR_POSTFIX			= "}";
 
 String FRobot::SERIAL_COMMAND_AUTO					= "FR+AUTO";
 String FRobot::SERIAL_COMMAND_OVERRIDE				= "FR+OVERRIDE";		
-String FRobot::SERIAL_COMMAND_DPAD_PREFIX			= "FR+DPAD";
-String FRobot::SERIAL_COMMAND_DPAD_FORWARD_POSTFIX	= "F";
-String FRobot::SERIAL_COMMAND_DPAD_REVERSE_POSTFIX	= "R";
-String FRobot::SERIAL_COMMAND_DPAD_LEFT_POSTFIX		= "L"; 
-String FRobot::SERIAL_COMMAND_DPAD_RIGHT_POSTFIX	= "R";
-String FRobot::SERIAL_COMMAND_DPAD_STOP_POSTFIX		= "S";
+String FRobot::SERIAL_COMMAND_DPAD_PREFIX			= "FR+DPAD:";
+String FRobot::SERIAL_COMMAND_DPAD_FORWARD_POSTFIX	= "F:";
+String FRobot::SERIAL_COMMAND_DPAD_REVERSE_POSTFIX	= "R:";
+String FRobot::SERIAL_COMMAND_DPAD_LEFT_POSTFIX		= "L:"; 
+String FRobot::SERIAL_COMMAND_DPAD_RIGHT_POSTFIX	= "R:";
+String FRobot::SERIAL_COMMAND_DPAD_STOP_POSTFIX		= "S:";
 
 
 FRobot::FRobot() {
@@ -101,6 +101,10 @@ void FRobot::PostStatus() {
 	Serial.print(SERIAL_COMMAND_MOVING);
 	Serial.println(mMovingForward);	
 
+	PostSonarResults();	
+}
+
+void FRobot::PostSonarStatus() {
 	Serial.print(SERIAL_COMMAND_SONAR_PREFIX);
 	if(!mMovingForward)
 	{
@@ -112,8 +116,14 @@ void FRobot::PostStatus() {
 			Serial.print(mLastScanValues[i]);		
 			Serial.print(") ");
 		}
+	} else {
+		Serial.print("(");
+		Serial.print(0);
+		Serial.print(",");
+		Serial.print(mCurrentForwardClearance);		
+		Serial.print(") ");
 	}
-	Serial.println(SERIAL_COMMAND_SONAR_POSTFIX);	
+	Serial.println(SERIAL_COMMAND_SONAR_POSTFIX);
 }
 
 boolean FRobot::InAutoMode() {
@@ -131,17 +141,19 @@ void FRobot::ParseInputBufer() {
 			mAutoMode = false;
 		} else if(!mAutoMode && input.startsWith(SERIAL_COMMAND_DPAD_PREFIX)) {
 			int prefixLen = SERIAL_COMMAND_DPAD_PREFIX.length();
-			char direction = input.charAt(prefixLen);
-			String magnitudeStr = input.substring(prefixLen + 1);
+			String direction = input.substring(prefixLen, prefixLen + 1);
+			String magnitudeStr = input.substring(prefixLen + 2);
 			int magnitude = magnitudeStr.toInt();
-			if (direction == SERIAL_COMMAND_DPAD_FORWARD_POSTFIX.charAt(0))
+			if (SERIAL_COMMAND_DPAD_FORWARD_POSTFIX.equals(direction))
 				GoForward(false, magnitude);
-			else if (direction == SERIAL_COMMAND_DPAD_REVERSE_POSTFIX.charAt(0))
+			else if (SERIAL_COMMAND_DPAD_REVERSE_POSTFIX.equals(direction))
 				GoBackward(false, magnitude);
-			else if (direction == SERIAL_COMMAND_DPAD_LEFT_POSTFIX.charAt(0))
+			else if (direction == SERIAL_COMMAND_DPAD_LEFT_POSTFIX.equals(direction))
 				TurnWheelsLeft(magnitude);
-			else if (direction == SERIAL_COMMAND_DPAD_RIGHT_POSTFIX.charAt(0))
+			else if (direction == SERIAL_COMMAND_DPAD_RIGHT_POSTFIX.equals(direction))
 				TurnWheelsRight(magnitude);
+			else if (direction == SERIAL_COMMAND_DPAD_STOP_POSTFIX.equals(direction))
+				Stop(magnitude);			
 		}
 	}
 }
@@ -281,8 +293,17 @@ int FRobot::PerformScanForBestPath() {
 		}
 	}
 	
+	// During this final write to center the sonar servo
+	// we will take advantage of the time needed and post
+	// the results
 	mSonarServo.write(SONAR_CENTER_ANGLE);
-	delay(MAX_SCAN_ANGLE*4 + 25);
+	int totalWaitMicros = (MAX_SCAN_ANGLE*4 + 25) * 1000;
+	unsigned long t0 = micros();
+	PostSonarStatus();
+	unsigned long t1 = micros();
+	long remaining = totalWaitMicros - (t1 - t0);
+	if (remaining > 0)
+		delay(remaining);
 	
 	return furthestDistanceAngle;
 }

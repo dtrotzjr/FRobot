@@ -22,6 +22,7 @@ class FRobot {
   void NavigateTowardClearestPath();
   
   void PostStatus();
+  void PostSonarStatus();
   
   boolean InAutoMode();
   void ParseInputBufer();
