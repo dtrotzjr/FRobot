@@ -117,7 +117,7 @@ void FRobot::PostSonarStatus() {
             Serial.print(mLastScanAngles[i]);
             Serial.print(",");
             Serial.print(mLastScanValues[i]);       
-            Serial.print(") ");
+            Serial.print(")|");
         }
     } else {
         Serial.print("(");
