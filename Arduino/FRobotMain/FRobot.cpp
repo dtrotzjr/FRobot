@@ -38,7 +38,7 @@ String FRobot::SERIAL_RECEIVE_DPAD_LEFT_POSTFIX     = "LT:";
 String FRobot::SERIAL_RECEIVE_DPAD_RIGHT_POSTFIX    = "RT:";
 String FRobot::SERIAL_RECEIVE_DPAD_STOP_POSTFIX     = "S:";
 
-#define TEST_WITHOUT_MOTORS
+// #define TEST_WITHOUT_MOTORS
 
 FRobot::FRobot() {
     mLastScanValuesLength = (2 * (MAX_SCAN_ANGLE/SCAN_ANGLE_STEP)) + 1;
@@ -319,6 +319,5 @@ int FRobot::PerformScanForBestPath() {
     long remaining = totalWaitMicros - (t1 - t0);
     if (remaining > 0)
         delay(remaining);
-    
     return furthestDistanceAngle;
 }
