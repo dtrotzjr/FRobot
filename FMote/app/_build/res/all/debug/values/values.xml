@@ -8,10 +8,10 @@
     <!-- From: file:/Users/dctrotz/Projects/Arduino/FRobot/FMote/app/src/main/res/values/strings.xml -->
     <eat-comment />
 
-    <string name="app_name">Bluetooth2</string>
+    <string name="app_name">RobotRemote</string>
     <string name="btn_OFF">LED OFF</string>
     <string name="btn_ON">LED ON</string>
-    <string name="title_activity_main">Bluetooth2</string>
+    <string name="title_activity_main">RobotRemote</string>
     <!-- From: file:/Users/dctrotz/Projects/Arduino/FRobot/FMote/app/src/main/res/values/styles.xml -->
     <eat-comment />
 
