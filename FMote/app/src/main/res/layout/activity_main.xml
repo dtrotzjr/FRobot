@@ -60,7 +60,7 @@
         <view
             android:layout_width="fill_parent"
             android:layout_height="@dimen/sonarHeight"
-            class="com.example.bluetooth2.SonarDrawableView"
+            class="com.apppoetry.FMote.SonarDrawableView"
             android:id="@+id/viewSonar"
             android:minHeight="200dp"
             android:minWidth="200dp" />
