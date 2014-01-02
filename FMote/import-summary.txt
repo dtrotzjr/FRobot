@@ -7,6 +7,13 @@ The following files were *not* copied into the new Gradle project; you
 should evaluate whether these are still needed in your project and if
 so manually move them:
 
+* build.gradle
+* gradle
+* gradle/wrapper
+* gradle/wrapper/gradle-wrapper.jar
+* gradle/wrapper/gradle-wrapper.properties
+* gradlew
+* gradlew.bat
 * ic_launcher-web.png
 * proguard-project.txt
 

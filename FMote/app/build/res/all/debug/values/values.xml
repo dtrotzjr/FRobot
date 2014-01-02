@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/Users/dctrotz/Projects/Bluetooth22/app/src/main/res/values/dimens.xml -->
+    <eat-comment />
+
+    <dimen name="sonarHeight">250dp</dimen>
+    <!-- From: file:/Users/dctrotz/Projects/Bluetooth22/app/src/main/res/values/strings.xml -->
+    <eat-comment />
+
+    <string name="app_name">Bluetooth2</string>
+    <string name="btn_OFF">LED OFF</string>
+    <string name="btn_ON">LED ON</string>
+    <string name="title_activity_main">Bluetooth2</string>
+    <!-- From: file:/Users/dctrotz/Projects/Bluetooth22/app/src/main/res/values/styles.xml -->
+    <eat-comment />
+
+    <style name="AppTheme" parent="android:Theme.Light" />
+
+</resources>
