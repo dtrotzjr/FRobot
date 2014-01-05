@@ -54,7 +54,7 @@ FRobot::~FRobot() {
 }
 
 void FRobot::Initialize() {
-    Serial.begin(57600);
+    Serial.begin(115200);
  
     mSteerServo.attach(SERVO_STEERING_PIN);
     mSteerServo.write(STEERING_CENTER_ANGLE);  
@@ -98,16 +98,20 @@ void FRobot::Step() {
 }
 
 void FRobot::PostStatus() {
+    ParseInputBufer();
     Serial.print(SERIAL_SEND_CLEARANCE);
     Serial.println(mCurrentForwardClearance);
+    ParseInputBufer();
     Serial.print(SERIAL_SEND_MOVING);
     Serial.println(mMovingForward); 
+    ParseInputBufer();
     Serial.print(SERIAL_SEND_AUTO);
     Serial.println(mAutoMode); 
     PostSonarStatus(); 
 }
 
 void FRobot::PostSonarStatus() {
+    ParseInputBufer();
     Serial.print(SERIAL_SEND_SONAR_PREFIX);
     if(!mMovingForward && mAutoMode)
     {
@@ -162,25 +166,42 @@ void FRobot::ParseInputBufer() {
     }
 }
 
+/*
+ * There are a lot of checks in here to Parse the Input Buffer 
+ * this is to give the bluetooth remote a chance to cancel this action
+ * as soon as possible rather than to wait for this entire method to
+ * finish out.
+ */
 void FRobot::NavigateTowardClearestPath() {
     Stop(true);
     int angle = PerformScanForBestPath();
-    int absAngle = abs(angle);
-    int multiplier = 0;
-    if (angle < 0)
-        multiplier = -1;
-    else if (angle > 0)
-        multiplier = 1;
-    if (multiplier != 0) {
-        TurnWheels(MAX_STEERING_ANGLE, multiplier);
-        GoBackward(true, 255);
-        double timeMultiplier = ((double)absAngle/(double)MAX_SCAN_ANGLE);
-        delay(1000 * timeMultiplier);
-        TurnWheels(MAX_STEERING_ANGLE, -multiplier);
-        GoForward(true, 255);
-        delay(750 * timeMultiplier);
-        Stop(true);
-        mSteerServo.write(STEERING_CENTER_ANGLE);
+    ParseInputBufer();
+    if (mAutoMode) {
+        int absAngle = abs(angle);
+        int multiplier = 0;
+        if (angle < 0)
+            multiplier = -1;
+        else if (angle > 0)
+            multiplier = 1;
+        if (multiplier != 0) {
+            ParseInputBufer();
+            if(mAutoMode)
+            {
+                TurnWheels(MAX_STEERING_ANGLE, multiplier);
+                GoBackward(true, 255);
+                double timeMultiplier = ((double)absAngle/(double)MAX_SCAN_ANGLE);
+                delay(1000 * timeMultiplier);
+                ParseInputBufer();
+                if(mAutoMode)
+                {
+                    TurnWheels(MAX_STEERING_ANGLE, -multiplier);
+                    GoForward(true, 255);
+                    delay(750 * timeMultiplier);
+                }
+            }
+            Stop(true);
+            mSteerServo.write(STEERING_CENTER_ANGLE);
+        }
     }
 }
 
@@ -284,40 +305,44 @@ float FRobot::ReadSonarDistance()
 * positive values indicate the left side of vehicle
 */
 int FRobot::PerformScanForBestPath() {
-    float furthestDistance = 0.0f;
-    float currentDistance = 0.0f;  
     int furthestDistanceAngle = 0;
+    ParseInputBufer();
+    if(mAutoMode)
+    {
+        float currentDistance = 0.0f;  
+        float furthestDistance = 0.0f;
     
-    mSonarServo.write(SONAR_CENTER_ANGLE - MAX_SCAN_ANGLE);
-    delay(MAX_SCAN_ANGLE*4 + 25);
+        mSonarServo.write(SONAR_CENTER_ANGLE - MAX_SCAN_ANGLE);
+        delay(MAX_SCAN_ANGLE*4 + 25);
     
-    int arrayIndex = 0;
-    for(int currentAngle = -MAX_SCAN_ANGLE; currentAngle <= MAX_SCAN_ANGLE; currentAngle += SCAN_ANGLE_STEP) {
-        mSonarServo.write(SONAR_CENTER_ANGLE + currentAngle);
-        delay(4*5 + 25);
+        int arrayIndex = 0;
+        for(int currentAngle = -MAX_SCAN_ANGLE; currentAngle <= MAX_SCAN_ANGLE; currentAngle += SCAN_ANGLE_STEP) {
+            mSonarServo.write(SONAR_CENTER_ANGLE + currentAngle);
+            delay(4*5 + 25);
         
-        currentDistance = ReadSonarDistance();
+            currentDistance = ReadSonarDistance();
         
-        mLastScanValues[arrayIndex] = currentDistance;
-        mLastScanAngles[arrayIndex] = currentAngle;
-        arrayIndex++;
+            mLastScanValues[arrayIndex] = currentDistance;
+            mLastScanAngles[arrayIndex] = currentAngle;
+            arrayIndex++;
         
-        if (currentDistance < 3000 && currentDistance > furthestDistance) {
-            furthestDistance = currentDistance;
-            furthestDistanceAngle = currentAngle;
+            if (currentDistance < 3000 && currentDistance > furthestDistance) {
+                furthestDistance = currentDistance;
+                furthestDistanceAngle = currentAngle;
+            }
         }
-    }
     
-    // During this final write to center the sonar servo
-    // we will take advantage of the time needed and post
-    // the results
-    mSonarServo.write(SONAR_CENTER_ANGLE);
-    int totalWaitMicros = (MAX_SCAN_ANGLE*4 + 25) * 1000;
-    unsigned long t0 = micros();
-    PostSonarStatus();
-    unsigned long t1 = micros();
-    long remaining = totalWaitMicros - (t1 - t0);
-    if (remaining > 0)
-        delay(remaining);
+        // During this final write to center the sonar servo
+        // we will take advantage of the time needed and post
+        // the results
+        mSonarServo.write(SONAR_CENTER_ANGLE);
+        unsigned long totalWaitMicros = (MAX_SCAN_ANGLE*4L + 25L) * 1000L;
+        unsigned long t0 = micros();
+        PostSonarStatus();
+        unsigned long t1 = micros();
+        long remaining = totalWaitMicros - (t1 - t0);
+        if (remaining > 0)
+            delayMicroseconds(remaining);
+    }
     return furthestDistanceAngle;
 }
