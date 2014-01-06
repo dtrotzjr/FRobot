@@ -79,6 +79,9 @@ public class SonarDrawableView extends View {
 
         int pairIndex = 0;
         mAngleValuePairs = new AngleValuePair[MAX_ANGLE_VALUE_PAIRS];
+        mMaxValue = 0;
+        mMinValue = 99999;
+
         int startIndex = sonarResultMessage.indexOf('{');
         int endIndex = sonarResultMessage.indexOf("}");
         if (startIndex >= 0 && endIndex > 0) {
@@ -152,9 +155,13 @@ public class SonarDrawableView extends View {
             ShapeDrawable drawable = new ShapeDrawable(new ArcShape(-pair.getAngle() - 7, 14));
             int value = pair.getValue();
             // Set the alpha based on how close the value is to the max
-            int alphaValue = (int)(196.0*((float)value/(float)mMaxValue));
-            drawable.getPaint().setColor(0xFF74AC23);
-            drawable.getPaint().setAlpha(alphaValue);
+            int alphaValue = (int)((196.0*((float)value/(float)mMaxValue)) + 64.0);
+            if (pair.getValue() < mMaxValue) {
+                drawable.getPaint().setColor(0xFF74AC23);
+                drawable.getPaint().setAlpha(alphaValue);
+            } else {
+                drawable.getPaint().setColor(0xFF400080);
+            }
 
             // Set the radius based on how close the value is to the max value
             int arcRadius = (int)(value * scaleFactor);

@@ -10,6 +10,9 @@
       <config />
     </shared>
   </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="ERROR" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="493c7884-a70d-4614-9717-8fd43f100e2e" name="Default" comment="" />
     <ignored path="Bluetooth2.iws" />
@@ -77,7 +80,7 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/apppoetry/FMote/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="62" column="45" selection-start="1610" selection-end="1610" vertical-scroll-proportion="0.70151305" vertical-offset="0" max-vertical-offset="4620">
+            <state line="307" column="32" selection-start="11628" selection-end="11628" vertical-scroll-proportion="0.26294822" vertical-offset="3867" max-vertical-offset="4620">
               <folding />
             </state>
           </provider>
@@ -98,7 +101,7 @@
       <file leaf-file-name="SonarDrawableView.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/apppoetry/FMote/SonarDrawableView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="51" column="0" selection-start="1443" selection-end="1443" vertical-scroll-proportion="0.0" vertical-offset="1275" max-vertical-offset="2475">
+            <state line="149" column="51" selection-start="5523" selection-end="5523" vertical-scroll-proportion="0.0" vertical-offset="1752" max-vertical-offset="2580">
               <folding />
             </state>
           </provider>
@@ -805,8 +808,8 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/apppoetry/FMote/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/apppoetry/FMote/SonarDrawableView.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/apppoetry/FMote/MainActivity.java" />
       </list>
     </option>
   </component>
@@ -1092,6 +1095,19 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -1117,19 +1133,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -1279,6 +1282,30 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/apppoetry/FMote/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state line="62" column="45" selection-start="1610" selection-end="1610" vertical-scroll-proportion="0.0" vertical-offset="930" max-vertical-offset="4740">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+      <provider editor-type-id="text-editor">
+        <state line="63" column="33" selection-start="2579" selection-end="2579" vertical-scroll-proportion="0.0" vertical-offset="706" max-vertical-offset="1470">
+          <folding />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/apppoetry/FMote/SonarDrawableView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="0" selection-start="1443" selection-end="1443" vertical-scroll-proportion="0.0" vertical-offset="765" max-vertical-offset="2625">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/apppoetry/FMote/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state line="70" column="26" selection-start="1890" selection-end="1890" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5160">
           <folding />
         </state>
@@ -1388,13 +1415,6 @@
         <state line="1858" column="58" selection-start="114436" selection-end="114436" vertical-scroll-proportion="0.15198618" vertical-offset="27767" max-vertical-offset="30120" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/apppoetry/FMote/SonarDrawableView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="0" selection-start="1443" selection-end="1443" vertical-scroll-proportion="0.0" vertical-offset="1275" max-vertical-offset="2475">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
       <provider editor-type-id="text-editor">
         <state line="63" column="33" selection-start="2579" selection-end="2579" vertical-scroll-proportion="0.0" vertical-offset="706" max-vertical-offset="1470">
@@ -1405,9 +1425,16 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/apppoetry/FMote/SonarDrawableView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="149" column="51" selection-start="5523" selection-end="5523" vertical-scroll-proportion="0.0" vertical-offset="1752" max-vertical-offset="2580">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/apppoetry/FMote/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="62" column="45" selection-start="1610" selection-end="1610" vertical-scroll-proportion="0.70151305" vertical-offset="0" max-vertical-offset="4620">
+        <state line="307" column="32" selection-start="11628" selection-end="11628" vertical-scroll-proportion="0.26294822" vertical-offset="3867" max-vertical-offset="4620">
           <folding />
         </state>
       </provider>

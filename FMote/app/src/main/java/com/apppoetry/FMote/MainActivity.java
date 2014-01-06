@@ -301,7 +301,7 @@ public class MainActivity extends Activity {
         }
 
         public void run() {
-            char[] buffer = new char[256];  // buffer store for the stream
+            char[] buffer = new char[8192];  // buffer store for the stream
             int bytes; // bytes returned from read()
 
             // Keep listening to the InputStream until an exception occurs
@@ -311,7 +311,7 @@ public class MainActivity extends Activity {
                     // Read from the InputStream
                     int b = mmInStream.read();
                     if (b == '\n') {
-                        String message = new String(buffer, 0, bufferIndex - 1);
+                        String message = new String(buffer, 0, bufferIndex == 0 ? bufferIndex : bufferIndex - 1);
                         mSerialMessageHandler.obtainMessage(RECIEVE_MESSAGE, message).sendToTarget();
                         bufferIndex = 0;
                     } else if (b > 0) {
