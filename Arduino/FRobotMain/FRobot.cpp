@@ -326,7 +326,7 @@ float FRobot::ReadSonarDistance()
     // average and comapring current values against that running 
     // average. If the values deviate too much we try another reading 
     // if the deviations continue we just take what we have and move on.
-    while (tries < 5) {
+    while (tries < maxTries) {
         unsigned long avg = MovingAverageRawSonarValue();
         duration = ReadRawSonarValue();
         // A delta longer than 2000 equates to around 35 cm
