@@ -197,13 +197,13 @@ void FRobot::NavigateTowardClearestPath() {
                 TurnWheels(MAX_STEERING_ANGLE, multiplier);
                 GoBackward(true, 255);
                 double timeMultiplier = ((double)absAngle/(double)MAX_SCAN_ANGLE);
-                delay(1000 * timeMultiplier);
+                delay((750 * timeMultiplier) + 500);
                 ParseInputBufer();
                 if(mAutoMode)
                 {
                     TurnWheels(MAX_STEERING_ANGLE, -multiplier);
                     GoForward(true, 255);
-                    delay(750 * timeMultiplier);
+                    delay((500 * timeMultiplier) + 250);
                 }
             }
             Stop(true);
@@ -221,7 +221,7 @@ void FRobot::GoForward(boolean fadeIn, byte maxSpeed)
     digitalWrite(MOTOR_CTL_C_PIN, LOW);  
     digitalWrite(MOTOR_CTL_D_PIN, HIGH);    
     if (fadeIn) { 
-        for(int i = (maxSpeed/2); i <= maxSpeed; i += (maxSpeed/16)) {
+        for(int i = (maxSpeed/2); i <= maxSpeed; i += (maxSpeed/8)) {
             analogWrite(MOTOR_CTL_ENABLE_PIN, i);  
             delay(maxSpeed/8);
         }
@@ -273,7 +273,7 @@ void FRobot::GoBackward(boolean fadeIn, byte maxSpeed)
     digitalWrite(MOTOR_CTL_C_PIN, HIGH);  
     digitalWrite(MOTOR_CTL_D_PIN, LOW); 
     if (fadeIn) { 
-        for(int i = (maxSpeed/2); i <= maxSpeed; i += (maxSpeed/16)) {
+        for(int i = (maxSpeed/2); i <= maxSpeed; i += (maxSpeed/8)) {
             analogWrite(MOTOR_CTL_ENABLE_PIN, i);  
             delay(maxSpeed/8);
         }
