@@ -18,6 +18,8 @@ protected:
     void TurnWheels(byte angle, int multiplier);
     void Stop(boolean useBreak);
   
+    unsigned long ReadRawSonarValue();
+    unsigned long MovingAverageRawSonarValue();
     float ReadSonarDistance();
     int PerformScanForBestPath();
     void NavigateTowardClearestPath();
@@ -41,7 +43,12 @@ protected:
     boolean mAutoMode;
   
     char* mInputBuffer;
+    
+    unsigned long* mSonarRingBuffer;
+    int mSonarRingBufferIndex;
   
+    static const byte SONAR_RING_BUFFER_MAX;
+    
     // Pin Assignments
     static const byte MOTOR_CTL_A_PIN;
     static const byte MOTOR_CTL_B_PIN;
