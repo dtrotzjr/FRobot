@@ -197,13 +197,14 @@ void FRobot::NavigateTowardClearestPath() {
                 TurnWheels(MAX_STEERING_ANGLE, multiplier);
                 GoBackward(true, 255);
                 double timeMultiplier = ((double)absAngle/(double)MAX_SCAN_ANGLE);
-                delay((750 * timeMultiplier) + 500);
+                long waitForMilliSeconds = (750 * timeMultiplier) + 500;
+                delay(waitForMilliSeconds);
                 ParseInputBufer();
                 if(mAutoMode)
                 {
                     TurnWheels(MAX_STEERING_ANGLE, -multiplier);
                     GoForward(true, 255);
-                    delay((500 * timeMultiplier) + 250);
+                    delay(waitForMilliSeconds / 2);
                 }
             }
             Stop(true);
